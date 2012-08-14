@@ -13,6 +13,7 @@ class Ruhoh
 
         Names = OpenStruct.new(Ruhoh::Names)
         SITE_YML = File.join(TEMP_SITE_PATH, Names.site_data)
+        CONFIG_YML = File.join(TEMP_SITE_PATH, Names.config_data)
 
         def app
           Api
@@ -41,12 +42,25 @@ class Ruhoh
         end
 
         it 'should return config.yml as yaml' do
+          get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/x-yaml}
+          last_response.body.should == File.open(CONFIG_YML){ |f| f.read }
         end
 
         it 'should return config.yml as json' do
+          get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/json}
+          yaml = File.open(CONFIG_YML, 'r:UTF-8') { |f| f.read }
+          last_response.body.should == YAML.load(yaml).to_json
         end
 
         it 'should return config.yml as text' do
+          get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/x-yaml}
+          last_response.body.should == File.open(CONFIG_YML){ |f| f.read }
         end
 
         it 'should return payload as json' do

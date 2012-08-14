@@ -7,6 +7,14 @@ class Ruhoh
     # Sinatra App that exposes a REST api for ruhoh administraton.
     class Api < Sinatra::Base
 
+      configure :production do
+        enable :logging
+      end
+
+      configure :development do
+        enable :logging, :dump_errors
+      end
+
       # Registers YAML mime-type
       mime_type :yaml, 'application/x-yaml'
 

@@ -56,7 +56,7 @@ class Ruhoh
             require 'pp'
             halt Ruhoh::DB.payload.pretty_inspect
           else
-            error status_code(:Not_Acceptable)
+            error status_code(:not_acceptable)
           end
         }
       end
@@ -72,7 +72,7 @@ class Ruhoh
       # @param [Array]  types       array of acceptable mime types
       # @return [String] response body
       def get(path, types)
-        error status_code(:Forbidden) if not is_allowed? path
+        error status_code(:forbidden) if not is_allowed? path
         types.each { |type|
           case type
           when mime_type('.json')
@@ -82,29 +82,27 @@ class Ruhoh
           when mime_type('.yaml')
             halt send_file path, :type => :yaml
           else
-            error status_code(:Not_Acceptable)
+            error status_code(:not_acceptable)
           end
         }
       rescue Errno::ENOENT => e
-        Friend.say { red e.message }
-        error status_code(:Not_Found)
+        logger.error e.message
+        error status_code(:not_found)
       end
 
       # (Over)writes the file at the specified path with +contents+
       # * sets HTTP staus to 403 if +path+ is not in +ALLOWED_PATHS+.
       # * sets HTTP status to 409 if an error is encountered while writing.
       # @param [String] path        path to the configuration file
-      # @param [String] contents    file contents
+      # @param [String] contents    contents (written to file in binary)
       # @return [String] response body
       def put(path, contents)
-        error status_code(:Forbidden) if not is_allowed? path
-        File.open(path, 'w+') { |f|
-          f.write contents
-        }
-        status Rack::Utils.status_code(:OK)
+        error status_code(:forbidden) if not is_allowed? path
+        IO.write path, contents, :mode => 'wb+'
+        halt status_code(:ok)
       rescue Errno::ENOENT => e
-        Friend.say { red e.message }
-        error status_code(:Conflict)
+        logger.error e.message
+        error status_code(:conflict)
       end
 
       # Checks if +path+ is not array of allowed paths.

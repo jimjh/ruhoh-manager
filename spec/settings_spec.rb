@@ -64,12 +64,24 @@ class Ruhoh
         end
 
         it 'should return payload as json' do
-        end
-
-        it 'should return payload as yml' do
+          get '/settings/payload', {}, {'HTTP_ACCEPT' => 'application/json'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/json}
+          last_response.body.should == Ruhoh::DB.payload.to_json
         end
 
         it 'should return payload as text' do
+          get '/settings/payload', {}, {'HTTP_ACCEPT' => 'text/plain'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^text/plain}
+          last_response.body.should == Ruhoh::DB.payload.pretty_inspect
+        end
+
+        it 'should return payload as yml' do
+          get '/settings/payload', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/x-yaml}
+          last_response.body.should == Ruhoh::DB.payload.to_yaml
         end
 
         it 'should overwrite site.yml' do

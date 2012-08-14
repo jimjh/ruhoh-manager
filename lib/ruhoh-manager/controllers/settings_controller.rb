@@ -1,5 +1,5 @@
 class Ruhoh
-  class Manager < Sinatra::Base
+  module Manager
 
     # Controls settings actions (for +site.yml+, +config.yml+, and +payload+).
     # @author Jim Lim

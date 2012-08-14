@@ -1,7 +1,7 @@
 require 'forwardable'
 
 class Ruhoh
-  class Manager < Sinatra::Base
+  module Manager
 
     # Super class for all manager controllers.
     # @author Jim Lim
@@ -25,5 +25,6 @@ class Ruhoh
       attr_reader :app, :request
 
     end
+
   end
 end

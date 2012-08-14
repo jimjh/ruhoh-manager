@@ -14,10 +14,14 @@ require 'ruhoh-manager/api'
 class Ruhoh
   module Manager
 
+    # Public: launches the sinatra app that serves the REST api.
+    # @params [Hash] opts         hash of options
     def self.launch(opts={})
+
       opts[:env] ||= 'development'
 
-      Ruhoh.setup       # TODO: smarter paths
+      # FIXME: handle multiple ruhohs
+      setup
       Ruhoh.config.env = opts[:env]
       Ruhoh::DB.update_all
 
@@ -29,6 +33,15 @@ class Ruhoh
         end
       }
 
+    end
+
+    # Internal: prepares the manager and the ruhoh app
+    def self.setup(opts={})
+      Ruhoh.setup opts       # TODO: handle multiple ruhohs
+    end
+
+    def self.reset(*args)
+      Ruhoh.reset(*args)
     end
 
   end

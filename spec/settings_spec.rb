@@ -1,50 +1,71 @@
-require 'bacon'
+require 'spec_helper'
+require 'rspec'
 require 'rack/test'
+require 'ruhoh-manager/api'
 
-module SettingsSpec
+class Ruhoh
+  module Manager
+    module SettingsSpec
 
-  ENV['RACK_ENV'] = 'test'
+      describe 'Settings Controller' do
 
-  def app
-    Sinatra::Application
+        include Rack::Test::Methods
+
+        Names = OpenStruct.new(Ruhoh::Names)
+        SITE_YML = File.join(TEMP_SITE_PATH, Names.site_data)
+
+        def app
+          Api
+        end
+
+        it 'should return site.yml as yaml' do
+          get '/settings/site', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/x-yaml}
+          last_response.body.should == File.open(SITE_YML){ |f| f.read }
+        end
+
+        it 'should return site.yml as json' do
+          get '/settings/site', {}, {'HTTP_ACCEPT' => 'application/json'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^application/json}
+          yaml = File.open(SITE_YML, 'r:UTF-8') { |f| f.read }
+          last_response.body.should == YAML.load(yaml).to_json
+        end
+
+        it 'should return site.yml as text' do
+          get '/settings/site', {}, {'HTTP_ACCEPT' => 'text/plain'}
+          last_response.should be_ok
+          last_response.content_type.should match %r{^text/plain}
+          last_response.body.should == File.open(SITE_YML){ |f| f.read }
+        end
+
+        it 'should return config.yml as yaml' do
+        end
+
+        it 'should return config.yml as json' do
+        end
+
+        it 'should return config.yml as text' do
+        end
+
+        it 'should return payload as json' do
+        end
+
+        it 'should return payload as yml' do
+        end
+
+        it 'should return payload as text' do
+        end
+
+        it 'should overwrite site.yml' do
+        end
+
+        it 'should overwrite config.yml' do
+        end
+
+      end
+
+    end
   end
-
-  describe 'Settings Controller' do
-    include Rack::Test::Methods
-
-    it 'should return site.yml as yaml' do
-    end
-
-    it 'should return site.yml as json' do
-    end
-
-    it 'should return site.yml as text' do
-    end
-
-    it 'should return config.yml as yaml' do
-    end
-
-    it 'should return config.yml as json' do
-    end
-
-    it 'should return config.yml as text' do
-    end
-
-    it 'should return payload as json' do
-    end
-
-    it 'should return payload as yml' do
-    end
-
-    it 'should return payload as text' do
-    end
-
-    it 'should overwrite site.yml' do
-    end
-
-    it 'should overwrite config.yml' do
-    end
-
-  end
-
 end

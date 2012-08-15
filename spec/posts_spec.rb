@@ -27,7 +27,7 @@ class Ruhoh
             last_response.body.force_encoding('utf-8').should == 'ただいま'
           end
 
-          it 'should handle nested posts' do
+          it 'should handle posts within directories' do
             f = File.join(POSTS_DIR, 'some', 'nested', 'structure', 'x.md')
             FileUtils.mkdir_p File.dirname(f)
             IO.write f, '«»≈≠Ωº', :mode => 'wb+'
@@ -37,18 +37,43 @@ class Ruhoh
             last_response.body.force_encoding('utf-8').should == '«»≈≠Ωº'
           end
 
+          it 'should write successfully and return a 200 if file exists' do
+            target = File.join(POSTS_DIR, 'target.md')
+            IO.write target, 'here is some english text', :mode => 'wb+'
+            put '/posts/target.md', '柳暗花明又一村'
+            last_response.should be_ok
+            IO.read(target).should == '柳暗花明又一村'
+          end
+
+          it 'should write successfully and return a 201 if file was created' do
+            target = File.join(POSTS_DIR, 'target.md')
+            put '/posts/target.md', '山重水复疑无路'
+            last_response.status.should == 201
+            IO.read(target).should == '山重水复疑无路'
+          end
+
         end
 
         context 'malformed requests' do
           it 'should return 403 if resource path is not under +posts+' do
+            # TODO: both get and put
           end
         end
 
         context 'reading/writing to other files' do
+
           it 'should return a 404 if getting unknown resource' do
             get '/posts/xyz'
             last_response.should be_not_found
           end
+
+          it 'should return a 409 if the target path is a directory' do
+            target = File.join(POSTS_DIR, 'target')
+            FileUtils.mkdir_p target
+            put '/posts/target', 'some content'
+            last_response.status.should == 409
+          end
+
         end
 
       end

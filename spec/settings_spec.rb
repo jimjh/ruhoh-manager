@@ -100,7 +100,7 @@ class Ruhoh
 
         end
 
-        context 'malformed requests for config' do
+         context 'malformed requests for config' do
 
           it 'should return JSON by default when Accepts is missing' do
             get '/settings/config'

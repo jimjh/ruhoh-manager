@@ -18,6 +18,7 @@ class Ruhoh
 
       # @return [Boolean] true <=> path is a child of +Ruhoh.paths.posts+
       def is_allowed?(path)
+        # TODO: handle multiple ruhohs
         File.fnmatch File.join(Ruhoh.paths.posts, '**'), path
       end
 

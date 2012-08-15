@@ -15,7 +15,7 @@ class Ruhoh
   module Manager
 
     # Public: launches the sinatra app that serves the REST api.
-    # @params [Hash] opts         hash of options
+    # @param [Hash] opts         hash of options
     def self.launch(opts={})
 
       opts[:env] ||= 'development'
@@ -40,6 +40,7 @@ class Ruhoh
       Ruhoh.setup opts       # TODO: handle multiple ruhohs
     end
 
+    # Internal: resets the manager
     def self.reset(*args)
       Ruhoh.reset(*args)
     end

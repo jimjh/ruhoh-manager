@@ -1,14 +1,26 @@
 # load application controller first
-require "#{File.dirname(__FILE__)}/controllers/application_controller"
-
-# loads all other controllers
-Dir["#{File.dirname(__FILE__)}/controllers/*_controller.rb"].each { |f| load f }
+require "ruhoh-manager/controllers/application_controller"
 
 class Ruhoh
   module Manager
 
-    # Sinatra App that exposes a REST api for ruhoh administraton.
+    # Collection of helper functions for the Api class.
+    module ApiHelper
+
+      # Loads all controllers that match +ruhoh-manager/controllers/*_controller.rb+
+      def load_controllers
+        # loads all other controllers
+        dir = File.join(File.dirname(__FILE__), 'controllers', '*_controller.rb')
+        Dir[dir].each { |controller| load controller }
+      end
+
+    end
+
+    # Sinatra App that exposes a REST api for ruhoh administration.
     class Api < Sinatra::Base
+      extend ApiHelper
+
+      load_controllers
 
       configure :production do
         enable :logging

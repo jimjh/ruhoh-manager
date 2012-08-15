@@ -28,7 +28,7 @@ def setup
   FileUtils.mkdir TEMP_SITE_PATH
   FileUtils.cp_r File.join(TEST_SITE_PATH, '.'), TEMP_SITE_PATH
   # FIXME: I don't like this
-  Ruhoh::Utils.stub(:parse_yaml_file).and_return({'theme' => 'twitter'})
+  Ruhoh::Utils.stub(:parse_yaml_file).and_return('theme' => 'twitter')
   Ruhoh::Paths.stub(:theme_is_valid?).and_return(true)
   Ruhoh::Manager.setup :source => TEMP_SITE_PATH
 end

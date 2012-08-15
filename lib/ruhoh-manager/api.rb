@@ -1,4 +1,7 @@
-# loads all controllers
+# load application controller first
+require "#{File.dirname(__FILE__)}/controllers/application_controller"
+
+# loads all other controllers
 Dir["#{File.dirname(__FILE__)}/controllers/*_controller.rb"].each { |f| load f }
 
 class Ruhoh

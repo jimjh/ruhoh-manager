@@ -3,7 +3,7 @@ class Ruhoh
 
     # Controls settings actions (for +site.yml+, +config.yml+, and +payload+).
     # @author Jim Lim
-    class SettingsController < Manager::ApplicationController
+    class SettingsController < ApplicationController
 
       # @param [Sinatra::Base] app          sinatra application
       # @param [Sinatra::Request] request   http request

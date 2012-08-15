@@ -137,6 +137,14 @@ class Ruhoh
             last_response.should be_not_found
           end
 
+          it 'should return a 404 if a known resource is missing' do
+            File.delete CONFIG_YML
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
+            last_response.should be_not_found
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            last_response.should be_not_found
+          end
+
           it 'should return a 403 if putting unknown resource' do
             put '/settings/xyz'
             last_response.should be_forbidden

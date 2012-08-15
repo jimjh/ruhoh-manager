@@ -83,7 +83,9 @@ class Ruhoh
             send_file path, :type => :yaml
           end
         }
-      rescue Errno::ENOENT => e
+      rescue SystemCallError => e
+        # we are trying to get sth, but we can't, so I guess the correct
+        # status code is not found.
         logger.error e.message
         error status_code(:not_found)
       end
@@ -98,7 +100,9 @@ class Ruhoh
         error status_code(:forbidden) if not is_allowed? path
         IO.write path, contents, :mode => 'wb+'
         halt status_code(:ok)
-      rescue Errno::ENOENT => e
+      rescue SystemCallError => e
+        # we are trying to put sth, but we can't, so I guess the correct status
+        # code is conflict.
         logger.error e.message
         error status_code(:conflict)
       end

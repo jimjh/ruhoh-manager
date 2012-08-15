@@ -34,38 +34,17 @@ class Ruhoh
       # Registers YAML mime-type
       mime_type :yaml, 'application/x-yaml'
 
-      # Routes to SettingsController#action
-      get '/settings/:action', :provides => [:json, :yaml, :text] do
-        controller = settings_controller
-        error 404, 'Unknown action' unless controller.respond_to? params[:action]
-        controller.public_send params[:action]
-      end
-
-      get '/settings/:action' do
-        error 406
-      end
-
-      # Routes to SettingsController#put_<action>
-      put '/settings/:action' do
-        controller = settings_controller
-        action = "put_#{params[:action]}"
-        error 404, 'Unknown action' unless controller.respond_to? action
-        controller.public_send action
-      end
-
-      # Generic route (for pages, posts, media, partials)
       get '/:controller/?*' do
         controller = create_controller params[:controller]
         controller.get params[:splat]
       end
 
-      private
-
-      # Gets a new instance of the settings controller
-      # @return [ApplicationController] settings controller
-      def settings_controller
-        create_controller 'settings'
+      put '/:controller/?*' do
+        controller = create_controller params[:controller]
+        controller.put params[:splat]
       end
+
+      private
 
       # Gets a new instance of the specified controller
       # @param [String] controller_str    e.g. +pages+, +posts+

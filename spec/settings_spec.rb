@@ -102,20 +102,48 @@ class Ruhoh
 
         context 'malformed requests' do
 
-          it 'should not deny access to private methods' do
-            get '/settings/get', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
-            last_response.should be_not_found
-          end
-
           it 'should never allow access to other files' do
-            # even if the hacker somehow managed to get around sinatra's routes
             api = mock app
             req = Rack::MockRequest.new api
             api.should_receive(:error).and_throw(:halt)
             controller = SettingsController.new api
             expect {
-              controller.send :get, 'x', ['application/json']
+              controller.send :_get, 'x', ['application/json']
             }.to throw_symbol :halt
+          end
+
+          it 'should return JSON by default when Accepts is missing' do
+            get '/settings/config'
+            last_response.should be_ok
+            last_response.content_type.should match %r{application/json}
+          end
+
+          it 'should return JSON by default' do
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/js'}
+            last_response.should be_ok
+            last_response.content_type.should match %r{application/json}
+          end
+
+        end
+
+        context 'reading/writing to other files' do
+
+          it 'should return a 404 if getting unknown resource' do
+            get '/settings/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}
+            last_response.should be_not_found
+            get '/settings', {} ,{'HTTP_ACCEPT' => 'application/json'}
+            last_response.should be_not_found
+            get '/settings/', {} ,{'HTTP_ACCEPT' => 'application/json'}
+            last_response.should be_not_found
+          end
+
+          it 'should return a 403 if putting unknown resource' do
+            put '/settings/xyz'
+            last_response.should be_forbidden
+            put '/settings'
+            last_response.should be_forbidden
+            put '/settings/'
+            last_response.should be_forbidden
           end
 
         end

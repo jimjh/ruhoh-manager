@@ -12,27 +12,32 @@ class Ruhoh
           Api
         end
 
-        context 'missing controller/action/mime type' do
+        context 'basic configuration' do
+
+          it 'should map yaml to application/x-yaml' do
+            app.mime_type(:yaml).should == 'application/x-yaml'
+          end
+
+        end
+
+        context 'missing controller' do
 
           it 'should return a 404 for missing controller' do
             get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
             last_response.should be_ok
             get '/blah/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}
             last_response.should be_not_found
-          end
-
-          it 'should return a 404 for missing action' do
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
+            put '/settings/config', ""
             last_response.should be_ok
-            get '/settings/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}
+            put '/blah/xyz', ""
             last_response.should be_not_found
           end
 
-          it 'should return a 406 for missing mime type' do
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
-            last_response.should be_ok
-            get '/settings/config'
-            last_response.status.should == 406
+          it 'should return a 404 for bad controller name' do
+            get '/x.y/blah'
+            last_response.should be_not_found
+            put '/x.y/blah'
+            last_response.should be_not_found
           end
 
         end

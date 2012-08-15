@@ -100,17 +100,7 @@ class Ruhoh
 
         end
 
-        context 'malformed requests' do
-
-          it 'should never allow access to other files' do
-            api = mock app
-            req = Rack::MockRequest.new api
-            api.should_receive(:error).and_throw(:halt)
-            controller = SettingsController.new api
-            expect {
-              controller.send :_get, 'x', ['application/json']
-            }.to throw_symbol :halt
-          end
+       context 'malformed requests for config' do
 
           it 'should return JSON by default when Accepts is missing' do
             get '/settings/config'
@@ -127,6 +117,16 @@ class Ruhoh
         end
 
         context 'reading/writing to other files' do
+
+          it 'should never allow access to other files' do
+            api = mock app
+            req = Rack::MockRequest.new api
+            api.should_receive(:error).and_throw(:halt)
+            controller = SettingsController.new api
+            expect {
+              controller.send :_get, 'x', ['application/json']
+            }.to throw_symbol :halt
+          end
 
           it 'should return a 404 if getting unknown resource' do
             get '/settings/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}

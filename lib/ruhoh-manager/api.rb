@@ -36,12 +36,20 @@ class Ruhoh
 
       get '/:controller/?*' do
         controller = create_controller params[:controller]
+        not_found unless controller.respond_to? :get
         controller.get params[:splat]
       end
 
       put '/:controller/?*' do
         controller = create_controller params[:controller]
+        not_found unless controller.respond_to? :put
         controller.put params[:splat]
+      end
+
+      delete '/:controller/?*' do
+        controller = create_controller params[:controller]
+        not_found unless controller.respond_to? :delete
+        controller.delete params[:splat]
       end
 
       private

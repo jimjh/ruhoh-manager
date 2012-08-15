@@ -52,6 +52,15 @@ class Ruhoh
             IO.read(target).should == '山重水复疑无路'
           end
 
+          it 'should delete the specified post if it exists' do
+            target = File.join(POSTS_DIR, 'target.md')
+            IO.write target, 'hello there this is jim', :mode => 'wb+'
+            File.file?(target).should be_true
+            delete '/posts/target.md'
+            last_response.should be_ok
+            File.file?(target).should be_false
+          end
+
         end
 
         context 'malformed requests' do
@@ -72,6 +81,17 @@ class Ruhoh
             FileUtils.mkdir_p target
             put '/posts/target', 'some content'
             last_response.status.should == 409
+          end
+
+          it 'should return a 404 if deleting unknown post' do
+            delete '/posts/x'
+            last_response.status.should == 404
+          end
+
+          it 'should return 403 if deleting directory' do
+            FileUtils.mkdir File.join(POSTS_DIR, 'x')
+            delete '/posts/x'
+            last_response.status.should == 403
           end
 
         end

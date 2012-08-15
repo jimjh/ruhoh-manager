@@ -1,8 +1,5 @@
 # encoding: utf-8
 require 'spec_helper'
-require 'rspec'
-require 'rack/test'
-require 'ruhoh-manager/api'
 
 class Ruhoh
   module Manager

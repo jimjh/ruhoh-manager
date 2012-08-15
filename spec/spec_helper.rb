@@ -14,6 +14,8 @@ end
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'ruhoh-manager'
+require 'rspec'
+require 'rack/test'
 
 # configure test environment
 ENV['RACK_ENV'] = 'test'

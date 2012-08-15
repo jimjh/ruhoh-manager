@@ -25,6 +25,10 @@ class Ruhoh
         controller.public_send params[:action]
       end
 
+      get '/settings/:action' do
+        error 406
+      end
+
       # Routes to SettingsController#put_<action>
       put '/:controller/:action' do
         controller = settings_controller

@@ -1,4 +1,4 @@
-# Ruhoh
+# @see http://ruhoh.com
 class Ruhoh
   # Ruhoh Manager - provides a REST api for managing Ruhoh blogs.
   module Manager

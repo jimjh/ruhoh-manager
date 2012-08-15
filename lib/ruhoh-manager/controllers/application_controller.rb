@@ -11,19 +11,17 @@ class Ruhoh
 
       # Forwards methods to app delegate and rack utils
       def_delegators :@app, :send_file, :mime_type, :error,
-                            :status, :halt, :logger
+                            :status, :halt, :logger, :request
       def_delegators :'Rack::Utils', :status_code
 
       # @param [Sinatra::Base] app          sinatra application
-      # @param [Sinatra::Request] request   http request
-      def initialize(app, request)
+      def initialize(app)
         @app = app
-        @request = request
       end
 
       protected
 
-      attr_reader :app, :request
+      attr_reader :app
 
     end
 

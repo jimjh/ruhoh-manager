@@ -112,7 +112,7 @@ class Ruhoh
             api = mock app
             req = Rack::MockRequest.new api
             api.should_receive(:error).and_throw(:halt)
-            controller = SettingsController.new api, req
+            controller = SettingsController.new api
             expect {
               controller.send :get, 'x', ['application/json']
             }.to throw_symbol :halt

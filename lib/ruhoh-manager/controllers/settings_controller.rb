@@ -6,9 +6,8 @@ class Ruhoh
     class SettingsController < ApplicationController
 
       # @param [Sinatra::Base] app          sinatra application
-      # @param [Sinatra::Request] request   http request
-      def initialize(app, request)
-        super app, request
+      def initialize(app)
+        super app
         @allowed_paths = [Ruhoh.paths.site_data, Ruhoh.paths.config_data]
       end
 
@@ -78,9 +77,9 @@ class Ruhoh
           when mime_type('.json')
             halt YAML::load_file(path).to_json
           when mime_type('.txt')
-            halt send_file path, :type => :text
+            send_file path, :type => :text
           when mime_type('.yaml')
-            halt send_file path, :type => :yaml
+            send_file path, :type => :yaml
           else
             error status_code(:not_acceptable)
           end

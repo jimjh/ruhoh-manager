@@ -108,6 +108,7 @@ class Ruhoh
           end
 
           it 'should never allow access to other files' do
+            # even if the hacker somehow managed to get around sinatra's routes
             api = mock app
             req = Rack::MockRequest.new api
             api.should_receive(:error).and_throw(:halt)

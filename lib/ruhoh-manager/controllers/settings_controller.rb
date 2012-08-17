@@ -48,20 +48,7 @@ class Ruhoh
       # @return [String] response body
       def payload(types)
         types << mime_type(:json)
-        types.each { |type|
-          case type
-          when mime_type(:json)
-            content_type :json
-            halt Ruhoh::DB.payload.to_json
-          when mime_type(:yaml)
-            content_type :yaml
-            halt Ruhoh::DB.payload.to_yaml
-          when mime_type(:text)
-            require 'pp'
-            content_type :text
-            halt Ruhoh::DB.payload.pretty_inspect
-          end
-        }
+        respond Ruhoh::DB.payload, types
       end
 
       # Serves the specified file if it is available. If +types+ is empty,

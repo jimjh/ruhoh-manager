@@ -16,7 +16,8 @@ class Ruhoh
 
       def is_allowed?(path)
         # TODO: multiple ruhohs
-        File.fnmatch File.join(Ruhoh.paths.partials, '**'), path
+        (File.fnmatch? File.join(Ruhoh.paths.partials, '**'), path) ||
+          (File.identical? Ruhoh.paths.partials, path)
       end
 
     end

@@ -8,6 +8,7 @@ class Ruhoh
     class ApplicationController
 
       extend Forwardable
+      include Serializer
 
       # Forwards methods to app delegate and rack utils
       def_delegators :@app, :send_file, :mime_type, :error,

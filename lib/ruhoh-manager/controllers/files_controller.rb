@@ -8,15 +8,24 @@ class Ruhoh
     # @author Jim Lim
     class FilesController < ApplicationController
 
-      # Retrieves the file at the specified uri as text.
+      # Retrieves the file at the specified uri as text. If the uri
+      # points to a directory, returns a listing of the files in that
+      # directory.
       # @param [Array] splat        splat from sinatra mapping; must
       #                             contain uri to new file.
       def get(splat)
-        error status_code(:not_found) if splat.empty?
-        path = resolve_uri splat[0]
+
+        uri = splat[0] || ''
+        path = resolve_uri uri
+
         error status_code(:forbidden) unless is_allowed? path
-        send_file path, :type => :text
-        # send_file already handles Errno::ENOENT, so we are safe
+        error status_code(:not_found) unless File.exists? path
+        if File.file? path
+          send_file path, :type => :text
+        else
+          send_directory path
+        end
+
       end
 
       # Writes the request body to a new file at the specified uri.
@@ -77,10 +86,28 @@ class Ruhoh
       # Checks if the given path is allowed by this controller. Invoked by
       # #get, #put, and #delete before any file I/O is done.
       # @abstract
-      # @param [String] path      path to file
+      # @param [String] path      path to file/directory
       # @return [Boolean] true <=> path is allowed
       def is_allowed?(path)
         raise :unimplemented
+      end
+
+      private
+
+      # Sends a directory listing
+      # @param [String] path      path to directory
+      def send_directory(path)
+        # TODO: use git ls
+        listing = []
+        Dir[File.join path, '*'].each { |child|
+          stat = File.stat child
+          listing << {
+            :name => (File.basename child),
+            :type => stat.ftype,
+            :size => stat.size
+          }
+        }
+        respond listing, request.accept
       end
 
     end

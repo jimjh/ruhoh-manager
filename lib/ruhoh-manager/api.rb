@@ -12,12 +12,19 @@ class Ruhoh
         Dir[dir].each { |controller| load controller }
       end
 
+      # Loads all helpers in the helpers directory.
+      def load_helpers
+        dir = File.join(File.dirname(__FILE__), 'helpers', '*.rb')
+        Dir[dir].each { |helper| load helper }
+      end
+
     end
 
     # Sinatra App that exposes a REST api for ruhoh administration.
     class Api < Sinatra::Base
       extend ApiHelper
 
+      load_helpers
       load_controllers
 
       configure :production do

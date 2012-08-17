@@ -35,29 +35,34 @@ class Ruhoh
       mime_type :yaml, 'application/x-yaml'
 
       get '/:controller/?*' do
-        controller = create_controller params[:controller]
-        not_found unless controller.respond_to? :get
-        controller.get params[:splat]
+        _invoke :get, params
       end
 
       put '/:controller/?*' do
-        controller = create_controller params[:controller]
-        not_found unless controller.respond_to? :put
-        controller.put params[:splat]
+        _invoke :put, params
       end
 
       delete '/:controller/?*' do
-        controller = create_controller params[:controller]
-        not_found unless controller.respond_to? :delete
-        controller.delete params[:splat]
+        _invoke :delete, params
       end
 
       private
 
+      # Invokes +method+ in controller. Throws 404 if method is missing in
+      # controller.
+      # @param [Symbol] method          method name
+      # @param [Array]  params          params from sinatra (must contain
+      #                                 +:controller+ and +:splat+)
+      def _invoke(method, params)
+        controller = _create_controller params[:controller]
+        not_found unless controller.respond_to? method
+        controller.public_send method, params[:splat]
+      end
+
       # Gets a new instance of the specified controller
       # @param [String] controller_str    e.g. +pages+, +posts+
       # @return [ApplicationController] controller
-      def create_controller(controller_str)
+      def _create_controller(controller_str)
         controller_name = "#{controller_str.capitalize}Controller"
         begin
           error 404, 'Unknown controller' unless Manager.const_defined? controller_name

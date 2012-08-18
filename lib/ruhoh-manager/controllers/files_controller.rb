@@ -67,7 +67,7 @@ class Ruhoh
         forbidden unless is_allowed? path
         not_found unless File.exists? path
         if File.file? path
-          content_type File.extname(path), :default => 'text/plain'
+          content_type File.extname(path), :default => 'text/plain;charset=utf-8'
           send_file path
         else
           send_directory path, types

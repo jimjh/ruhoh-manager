@@ -59,15 +59,15 @@ class Ruhoh
       # @return [String] response body
       def _get(path, types)
         error status_code(:forbidden) if not is_allowed? path
-        types << mime_type(:json)
+        types << json
         types.each { |type|
           case type
-          when mime_type(:json)
+          when json
             content_type :json
             halt YAML::load_file(path).to_json
-          when mime_type(:text)
+          when text
             send_file path, :type => :text
-          when mime_type(:yaml)
+          when yaml
             send_file path, :type => :yaml
           end
         }

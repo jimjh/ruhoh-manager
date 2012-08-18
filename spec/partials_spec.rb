@@ -100,9 +100,9 @@ class Ruhoh
           end
 
           it 'should return the directory listing as YAML' do
-            get '/partials/', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/partials/', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
-            last_response.content_type.should match %r{^application/x-yaml;charset=utf-8}
+            last_response.content_type.should match %r{^text/yaml;charset=utf-8}
           end
 
           it 'should return the directory listing as text' do

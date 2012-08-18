@@ -38,9 +38,6 @@ class Ruhoh
         enable :logging, :dump_errors
       end
 
-      # Registers YAML mime-type
-      mime_type :yaml, 'application/x-yaml'
-
       get '/:controller/?*' do
         _invoke :get, params
       end

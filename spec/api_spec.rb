@@ -12,14 +12,6 @@ class Ruhoh
           Api
         end
 
-        context 'basic configuration' do
-
-          it 'should map yaml to application/x-yaml' do
-            app.mime_type(:yaml).should == 'application/x-yaml'
-          end
-
-        end
-
         context 'missing controller' do
 
           it 'should return a 404 for missing controller' do

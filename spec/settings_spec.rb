@@ -20,9 +20,9 @@ class Ruhoh
         context 'well-formed requests' do
 
           it 'should return site.yml as yaml' do
-            get '/settings/site', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/settings/site', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
-            last_response.content_type.should match %r{^application/x-yaml}
+            last_response.content_type.should match %r{^text/yaml}
             last_response.body.should == File.open(SITE_YML){ |f| f.read }
           end
 
@@ -42,9 +42,9 @@ class Ruhoh
           end
 
           it 'should return config.yml as yaml' do
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
-            last_response.content_type.should match %r{^application/x-yaml}
+            last_response.content_type.should match %r{^text/yaml}
             last_response.body.should == File.open(CONFIG_YML) { |f| f.read }
           end
 
@@ -57,9 +57,9 @@ class Ruhoh
           end
 
           it 'should return config.yml as text' do
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
-            last_response.content_type.should match %r{^application/x-yaml}
+            last_response.content_type.should match %r{^text/yaml}
             last_response.body.should == File.open(CONFIG_YML) { |f| f.read }
           end
 
@@ -78,9 +78,9 @@ class Ruhoh
           end
 
           it 'should return payload as yml' do
-            get '/settings/payload', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/settings/payload', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
-            last_response.content_type.should match %r{^application/x-yaml}
+            last_response.content_type.should match %r{^text/yaml}
             last_response.body.should == Ruhoh::DB.payload.to_yaml
           end
 
@@ -141,7 +141,7 @@ class Ruhoh
             File.delete CONFIG_YML
             get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
             last_response.should be_not_found
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            get '/settings/config', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_not_found
           end
 

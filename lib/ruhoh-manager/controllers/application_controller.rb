@@ -3,7 +3,8 @@ require 'forwardable'
 class Ruhoh
   module Manager
 
-    # Super class for all manager controllers.
+    # Super class for all manager controllers. Does plumbing to provide
+    # helper methods for child classes.
     # @author Jim Lim
     class ApplicationController
 

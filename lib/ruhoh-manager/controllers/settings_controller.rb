@@ -9,7 +9,7 @@ class Ruhoh
 
       # Retrieves the specified (+splat+) resource.
       # @see #_get
-      # @see #payload
+      # @see #_payload
       # @param [Array] splat    splat from sinatra mapping
       def get(splat)
         error status_code(:not_found) if splat.empty?
@@ -20,7 +20,7 @@ class Ruhoh
         when 'site'
           _get Ruhoh.paths.site_data, request.accept
         when 'payload'
-          payload request.accept
+          _payload request.accept
         else
           error status_code(:not_found)
         end
@@ -46,7 +46,7 @@ class Ruhoh
       # Returns the payload in the format requested. Defaults to JSON.
       # @param [Array] types      array of acceptable mime types
       # @return [String] response body
-      def payload(types)
+      def _payload(types)
         respond Ruhoh::DB.payload, types
       end
 

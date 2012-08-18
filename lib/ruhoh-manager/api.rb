@@ -7,15 +7,18 @@ class Ruhoh
       # Loads all controllers that match
       # +ruhoh-manager/controllers/*_controller.rb+
       def load_controllers
-        # loads all other controllers
-        dir = File.join(File.dirname(__FILE__), 'controllers', '*_controller.rb')
-        Dir[dir].each { |controller| load controller }
+        load_glob File.join(File.dirname(__FILE__), 'controllers', '*_controller.rb')
       end
 
       # Loads all helpers in the helpers directory.
       def load_helpers
-        dir = File.join(File.dirname(__FILE__), 'helpers', '*.rb')
-        Dir[dir].each { |helper| load helper }
+        load_glob File.join(File.dirname(__FILE__), 'helpers', '*.rb')
+      end
+
+      # Loads all files that match the given +glob+.
+      # @param [String] glob        UNIX glob
+      def load_glob(glob)
+        Dir[glob].each { |f| load f }
       end
 
     end

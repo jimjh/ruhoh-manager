@@ -120,7 +120,6 @@ class Ruhoh
 
           it 'should never allow access to other files' do
             api = mock app
-            req = Rack::MockRequest.new api
             api.should_receive(:error).and_throw(:halt)
             controller = SettingsController.new api
             expect {

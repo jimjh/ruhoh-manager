@@ -61,18 +61,20 @@ class Ruhoh
             File.file?(target).should be_false
           end
 
-          it 'should return the directory listing as JSON/YAML/text' do
-
+          # Prepares directory.
+          def prep_dir
             FileUtils.mkdir File.join(PARTIALS_DIR, 'test')
-
-            # construct directory
             child_file = File.join(PARTIALS_DIR, 'test','partial.md')
             IO.write child_file, 'x', :mode => 'w+'
             File.file?(child_file).should be_true
-
             child_dir = File.join(PARTIALS_DIR, 'test', 'foldr')
             FileUtils.mkdir child_dir
             File.directory?(child_dir).should be_true
+          end
+
+          it 'should return the directory listing as JSON' do
+
+            prep_dir
 
             # check with and without trailing slashes
             get '/partials/test'
@@ -86,20 +88,27 @@ class Ruhoh
             listing = JSON.parse last_response.body
             listing.size.should == 2
             listing.sort_by! { |entry| entry['name'] }
-            listing[0].to_a.sort.should == {'name' => 'foldr', 'size' => 68,
-                                            'type' => 'directory'}.to_a.sort
-            listing[1].to_a.sort.should == {'name' => 'partial.md', 'size' => 1,
-                                            'type' => 'file'}.to_a.sort
 
-            # check other formats
+            # delete size because dir size differs across OS
+            listing[0].delete 'size'
+            listing[0].sort.should == {'name' => 'foldr',
+                                       'type' => 'directory'}.sort
+            listing[1].sort.should == {'name' => 'partial.md',
+                                       'size' => 1,
+                                       'type' => 'file'}.sort
+
+          end
+
+          it 'should return the directory listing as YAML' do
             get '/partials/', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
             last_response.should be_ok
             last_response.content_type.should match %r{^application/x-yaml;charset=utf-8}
+          end
 
+          it 'should return the directory listing as text' do
             get '/partials/', {}, {'HTTP_ACCEPT' => 'text/plain'}
             last_response.should be_ok
             last_response.content_type.should match %r{^text/plain;charset=utf-8}
-
           end
 
         end

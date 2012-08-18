@@ -86,8 +86,10 @@ class Ruhoh
             listing = JSON.parse last_response.body
             listing.size.should == 2
             listing.sort_by! { |entry| entry['name'] }
-            listing[0].should == {'name' => 'foldr', 'size' => 68, 'type' => 'directory'}
-            listing[1].should == {'name' => 'partial.md', 'size' => 1, 'type' => 'file'}
+            listing[0].should == {'name' => 'foldr', 'size' => 68,
+                                  'type' => 'directory'}
+            listing[1].should == {'name' => 'partial.md', 'size' => 1,
+                                  'type' => 'file'}
 
             # check other formats
             get '/partials/', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}

@@ -47,7 +47,6 @@ class Ruhoh
       # @param [Array] types      array of acceptable mime types
       # @return [String] response body
       def payload(types)
-        types << mime_type(:json)
         respond Ruhoh::DB.payload, types
       end
 

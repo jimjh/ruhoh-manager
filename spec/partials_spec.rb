@@ -61,6 +61,45 @@ class Ruhoh
             File.file?(target).should be_false
           end
 
+          it 'should return the directory listing as JSON/YAML/text' do
+
+            FileUtils.mkdir File.join(PARTIALS_DIR, 'test')
+
+            # construct directory
+            child_file = File.join(PARTIALS_DIR, 'test','partial.md')
+            IO.write child_file, 'x', :mode => 'w+'
+            File.file?(child_file).should be_true
+
+            child_dir = File.join(PARTIALS_DIR, 'test', 'foldr')
+            FileUtils.mkdir child_dir
+            File.directory?(child_dir).should be_true
+
+            # check with and without trailing slashes
+            get '/partials/test'
+            last_response.should be_ok
+            last_response.content_type.should match %r{^application/json;charset=utf-8}
+
+            get '/partials/test/'
+            last_response.should be_ok
+            last_response.content_type.should match %r{^application/json;charset=utf-8}
+
+            listing = JSON.parse last_response.body
+            listing.size.should == 2
+            listing.sort_by { |entry| entry['name'] }
+            listing[0].should == {'name' => 'foldr', 'size' => 68, 'type' => 'directory'}
+            listing[1].should == {'name' => 'partial.md', 'size' => 1, 'type' => 'file'}
+
+            # check other formats
+            get '/partials/', {}, {'HTTP_ACCEPT' => 'application/x-yaml'}
+            last_response.should be_ok
+            last_response.content_type.should match %r{^application/x-yaml;charset=utf-8}
+
+            get '/partials/', {}, {'HTTP_ACCEPT' => 'text/plain'}
+            last_response.should be_ok
+            last_response.content_type.should match %r{^text/plain;charset=utf-8}
+
+          end
+
         end
 
         context 'malformed requests' do

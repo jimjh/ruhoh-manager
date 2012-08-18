@@ -19,9 +19,9 @@ class Ruhoh
             last_response.should be_ok
             get '/blah/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}
             last_response.should be_not_found
-            put '/settings/config', ""
+            put '/settings/config', ''
             last_response.should be_ok
-            put '/blah/xyz', ""
+            put '/blah/xyz', ''
             last_response.should be_not_found
           end
 

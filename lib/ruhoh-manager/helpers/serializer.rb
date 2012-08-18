@@ -2,6 +2,8 @@ class Ruhoh
   module Manager
 
     # Collection of helper methods for serialization.
+    # This can only be used in subclasses of {ApplicationController} because
+    # it requires method delegation to a Sinatra app.
     module Serializer
 
       # @return mime type for json
@@ -22,7 +24,7 @@ class Ruhoh
       # Serializes object and sends it as the HTTP response. Defaults to
       # JSON.
       # @param [Object] object        the object to serialize
-      # @param [Array] types          request.types
+      # @param [Array] types          request.accept
       def respond(object, types)
         types << json
         types.each { |type|

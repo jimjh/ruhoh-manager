@@ -24,7 +24,7 @@ class Ruhoh
       # @param [Array] splat        splat from sinatra mapping; must
       #                             contain uri to new file.
       def put(splat)
-        error status_code(:bad_request) if splat.empty?
+        bad_request if splat.empty?
         _put resolve_uri(splat[0]), request.body.read
       end
 
@@ -34,7 +34,7 @@ class Ruhoh
       # @param [Array] splat        splat from sinatra mapping; must contain
       #                             uri to file
       def delete(splat)
-        error status_code(:bad_request) if splat.empty?
+        bad_request if splat.empty?
         _delete resolve_uri(splat[0])
       end
 
@@ -64,8 +64,8 @@ class Ruhoh
       # @param [String] path          path to file
       # @param [Array] types          array of client accept types
       def _get(path, types)
-        error status_code(:forbidden) unless is_allowed? path
-        error status_code(:not_found) unless File.exists? path
+        forbidden unless is_allowed? path
+        not_found unless File.exists? path
         if File.file? path
           send_file path, :type => :text
         else
@@ -77,28 +77,28 @@ class Ruhoh
       # @param [String] path        path to file
       # @param [String] contents    contents to write to file
       def _put(path, contents)
-        error status_code(:forbidden) unless is_allowed? path
-        res = (File.file? path) ? :ok : :created
+        forbidden unless is_allowed? path
+        existed = File.file? path
         # ensure path exists, and write to file
         FileUtils.mkdir_p File.dirname(path)
         IO.write path, contents, :mode => 'wb+'
-        halt status_code(res)
+        existed ? ok : created
       rescue SystemCallError => e
         logger.error e.message
-        error status_code(:conflict)
+        conflict
       end
 
       # Deletes file at +path+ if it exists.
       # @param [String] path        path to file
       def _delete(path)
-        error status_code(:forbidden) unless is_allowed? path
-        error status_code(:not_found) unless File.exists? path
-        error status_code(:forbidden) unless File.file? path
+        forbidden unless is_allowed? path
+        not_found unless File.exists? path
+        forbidden unless File.file? path
         File.delete path
-        halt status_code(:ok)
+        ok
       rescue SystemCallError => e
         logger.error e.message
-        error status_code(:internal_server_error)
+        internal_server_error
       end
 
       # Sends a directory listing

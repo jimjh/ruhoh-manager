@@ -12,7 +12,7 @@ class Ruhoh
       # @see #_payload
       # @param [Array] splat    splat from sinatra mapping
       def get(splat)
-        error status_code(:not_found) if splat.empty?
+        not_found if splat.empty?
         # TODO: handle multiple ruhoh instances
         case splat[0]
         when 'config'
@@ -22,7 +22,7 @@ class Ruhoh
         when 'payload'
           _payload request.accept
         else
-          error status_code(:not_found)
+          not_found
         end
       end
 
@@ -30,14 +30,14 @@ class Ruhoh
       # @see #_put
       # @param [Array] splat    splat from sinatra mapping
       def put(splat)
-        error status_code(:bad_request) if splat.empty?
+        bad_request if splat.empty?
         case splat[0]
         when 'config'
           _put Ruhoh.paths.config_data, request.body.read
         when 'site'
           _put Ruhoh.paths.site_data, request.body.read
         else
-          error status_code(:forbidden)
+          forbidden
         end
       end
 
@@ -58,7 +58,7 @@ class Ruhoh
       # @param [Array]  types       array of acceptable mime types
       # @return [String] response body
       def _get(path, types)
-        error status_code(:forbidden) if not is_allowed? path
+        forbidden if not is_allowed? path
         types << json
         types.each { |type|
           case type
@@ -75,7 +75,7 @@ class Ruhoh
         # we are trying to get sth, but we can't, so I guess the correct
         # status code is not found.
         logger.error e.message
-        error status_code(:not_found)
+        not_found
       end
 
       # (Over)writes the file at the specified path with +contents+
@@ -85,14 +85,14 @@ class Ruhoh
       # @param [String] contents    contents (written to file in binary)
       # @return [String] response body
       def _put(path, contents)
-        error status_code(:forbidden) if not is_allowed? path
+        forbidden if not is_allowed? path
         IO.write path, contents, :mode => 'wb+'
-        halt status_code(:ok)
+        ok
       rescue SystemCallError => e
         # we are trying to put sth, but we can't, so I guess the correct status
         # code is conflict.
         logger.error e.message
-        error status_code(:conflict)
+        conflict
       end
 
       # Checks if +path+ is not array of allowed paths.

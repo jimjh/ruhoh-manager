@@ -14,18 +14,8 @@ class Ruhoh
       # @param [Array] splat        splat from sinatra mapping; must
       #                             contain uri to new file.
       def get(splat)
-
-        uri = splat[0] || ''
-        path = resolve_uri uri
-
-        error status_code(:forbidden) unless is_allowed? path
-        error status_code(:not_found) unless File.exists? path
-        if File.file? path
-          send_file path, :type => :text
-        else
-          send_directory path
-        end
-
+        path = resolve_uri(splat[0] || '')
+        _get path, request.accept
       end
 
       # Writes the request body to a new file at the specified uri.
@@ -34,21 +24,8 @@ class Ruhoh
       # @param [Array] splat        splat from sinatra mapping; must
       #                             contain uri to new file.
       def put(splat)
-
         error status_code(:bad_request) if splat.empty?
-        path = resolve_uri splat[0]
-        error status_code(:forbidden) unless is_allowed? path
-
-        res = (File.file? path) ? :ok : :created
-
-        # ensure path exists, and write to file
-        FileUtils.mkdir_p File.dirname(path)
-        IO.write path, request.body.read, :mode => 'wb+'
-        halt status_code(res)
-
-      rescue SystemCallError => e
-        logger.error e.message
-        error status_code(:conflict)
+        _put resolve_uri(splat[0]), request.body.read
       end
 
       # Deletes the file at the given uri.
@@ -57,19 +34,8 @@ class Ruhoh
       # @param [Array] splat        splat from sinatra mapping; must contain
       #                             uri to file
       def delete(splat)
-
         error status_code(:bad_request) if splat.empty?
-        path = resolve_uri splat[0]
-        error status_code(:forbidden) unless is_allowed? path
-        error status_code(:not_found) unless File.exists? path
-        error status_code(:forbidden) unless File.file? path
-
-        File.delete path
-        halt status_code(:ok)
-
-      rescue SystemCallError => e
-        logger.error e.message
-        error status_code(:internal_server_error)
+        _delete resolve_uri(splat[0])
       end
 
       protected
@@ -94,9 +60,51 @@ class Ruhoh
 
       private
 
+      # Retrieves the file at +path+ or returns a directory listing.
+      # @param [String] path          path to file
+      # @param [Array] types          array of client accept types
+      def _get(path, types)
+        error status_code(:forbidden) unless is_allowed? path
+        error status_code(:not_found) unless File.exists? path
+        if File.file? path
+          send_file path, :type => :text
+        else
+          send_directory path, types
+        end
+      end
+
+      # Writes +contents+ to file at +path+.
+      # @param [String] path        path to file
+      # @param [String] contents    contents to write to file
+      def _put(path, contents)
+        error status_code(:forbidden) unless is_allowed? path
+        res = (File.file? path) ? :ok : :created
+        # ensure path exists, and write to file
+        FileUtils.mkdir_p File.dirname(path)
+        IO.write path, contents, :mode => 'wb+'
+        halt status_code(res)
+      rescue SystemCallError => e
+        logger.error e.message
+        error status_code(:conflict)
+      end
+
+      # Deletes file at +path+ if it exists.
+      # @param [String] path        path to file
+      def _delete(path)
+        error status_code(:forbidden) unless is_allowed? path
+        error status_code(:not_found) unless File.exists? path
+        error status_code(:forbidden) unless File.file? path
+        File.delete path
+        halt status_code(:ok)
+      rescue SystemCallError => e
+        logger.error e.message
+        error status_code(:internal_server_error)
+      end
+
       # Sends a directory listing
       # @param [String] path      path to directory
-      def send_directory(path)
+      # @param [Array] types          array of client accept types
+      def send_directory(path, types)
         # TODO: use git ls
         listing = []
         Dir[File.join path, '*'].each { |child|
@@ -107,7 +115,7 @@ class Ruhoh
             :size => stat.size
           }
         }
-        respond listing, request.accept
+        respond listing, types
       end
 
     end

@@ -38,6 +38,9 @@ class Ruhoh
     # Internal: prepares the manager and the ruhoh app
     def self.setup(opts={})
       Ruhoh.setup opts       # TODO: handle multiple ruhohs
+      Ruhoh.setup_paths
+      Ruhoh.setup_urls
+      Ruhoh.setup_plugins unless opts[:enable_plugins] == false
     end
 
     # Internal: resets the manager

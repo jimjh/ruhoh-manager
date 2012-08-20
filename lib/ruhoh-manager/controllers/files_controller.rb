@@ -38,7 +38,7 @@ class Ruhoh
         _delete resolve_uri(splat[0])
       end
 
-      protected
+      private
 
       # Converts uri to file path.
       # E.g. +/cars/ferrari.md+ -> +/usr/codex/posts/cars/ferrari.md+

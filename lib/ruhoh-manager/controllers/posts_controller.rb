@@ -7,7 +7,7 @@ class Ruhoh
     # @author Jim Lim
     class PostsController < FilesController
 
-      protected
+      private
 
       def resolve_uri(uri)
         return File.expand_path uri, Ruhoh.paths.posts # TODO

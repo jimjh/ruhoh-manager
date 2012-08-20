@@ -22,7 +22,7 @@ class Ruhoh
         @app = app
       end
 
-      protected
+      private
 
       attr_reader :app
 

@@ -7,7 +7,7 @@ class Ruhoh
     # @author Jim Lim
     class PartialsController < FilesController
 
-      protected
+      private
 
       def resolve_uri(uri)
         # TODO: multiple ruhohs

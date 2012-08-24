@@ -49,6 +49,13 @@ class Ruhoh
         raise :unimplemented
       end
 
+      # Checks if the specified file is visible.
+      # @param [String] path          path to file/directory
+      # @return [Boolean] true if file does not begin with a dot
+      def is_visible?(path)
+        File.basename(path)[0] != '.'
+      end
+
       # Checks if the given path is allowed by this controller. Invoked by
       # #get, #put, and #delete before any file I/O is done.
       # @abstract
@@ -64,7 +71,7 @@ class Ruhoh
       # @param [String] path          path to file
       # @param [Array] types          array of client accept types
       def _get(path, types)
-        forbidden unless is_allowed? path
+        forbidden unless is_visible? path and is_allowed? path
         not_found unless File.exists? path
         if File.file? path
           content_type File.extname(path), :default => 'text/plain;charset=utf-8'

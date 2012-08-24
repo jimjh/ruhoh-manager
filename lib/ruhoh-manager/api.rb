@@ -3,8 +3,9 @@ class Ruhoh
 
     # Sinatra App that exposes a REST api for ruhoh administration.
     class Api < Sinatra::Base
-      extend Loader
-      extend OAuth
+
+      register Loader
+      register OAuth
 
       load_helpers
       load_controllers

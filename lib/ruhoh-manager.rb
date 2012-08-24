@@ -9,8 +9,8 @@ require 'json'
 require 'ruhoh'
 
 require 'ruhoh-manager/version'
-require 'ruhoh-manager/loader'
-require 'ruhoh-manager/oauth'
+require 'ruhoh-manager/extensions/loader'
+require 'ruhoh-manager/extensions/oauth'
 require 'ruhoh-manager/api'
 
 class Ruhoh

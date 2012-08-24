@@ -1,7 +1,12 @@
 class Ruhoh
   module Manager
 
-    # Collection of helper functions for the Api class.
+    # Methods for loading controllers and helpers.
+    # Usage:
+    #   class Api < Sinatra::Base
+    #     extend Loader
+    #     ...
+    #   end
     module Loader
 
       # Loads all controllers that match

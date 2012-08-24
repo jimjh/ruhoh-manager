@@ -1,31 +1,10 @@
 class Ruhoh
   module Manager
 
-    # Collection of helper functions for the Api class.
-    module ApiHelper
-
-      # Loads all controllers that match
-      # +ruhoh-manager/controllers/*_controller.rb+
-      def load_controllers
-        load_glob File.join(File.dirname(__FILE__), 'controllers', '*_controller.rb')
-      end
-
-      # Loads all helpers in the helpers directory.
-      def load_helpers
-        load_glob File.join(File.dirname(__FILE__), 'helpers', '*.rb')
-      end
-
-      # Loads all files that match the given +glob+.
-      # @param [String] glob        UNIX glob
-      def load_glob(glob)
-        Dir[glob].each { |f| load f }
-      end
-
-    end
-
     # Sinatra App that exposes a REST api for ruhoh administration.
     class Api < Sinatra::Base
-      extend ApiHelper
+      extend Loader
+      extend OAuth
 
       load_helpers
       load_controllers

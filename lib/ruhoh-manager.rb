@@ -5,6 +5,7 @@ require 'psych'
 YAML::ENGINE.yamler = 'psych'
 
 require 'sinatra/base'
+require 'rack/oauth2/sinatra'
 require 'json'
 require 'ruhoh'
 

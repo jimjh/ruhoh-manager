@@ -5,10 +5,13 @@ class Ruhoh
     class Api < Sinatra::Base
 
       register Loader
+      register Rack::OAuth2::Sinatra
       register OAuth
 
-      load_helpers
+      load_helpers          # use the loader to load controllers and helpers
       load_controllers
+
+      protect oauth         # use oauth2 to protect access to the api
 
       configure :production do
         enable :logging

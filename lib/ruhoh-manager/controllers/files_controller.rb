@@ -1,5 +1,3 @@
-require "ruhoh-manager/controllers/application_controller"
-
 class Ruhoh
   module Manager
 

@@ -7,8 +7,7 @@ class Ruhoh
     class ApplicationController
 
       extend Forwardable
-      include Accessory::Serializer
-      include Accessory::StatusCode
+      Accessory.constants.each { |acc| include Accessory.const_get(acc) }
 
       # Forwards methods to app delegate and rack utils
       def_delegators :@app, :send_file, :mime_type, :status,

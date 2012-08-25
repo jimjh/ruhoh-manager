@@ -10,8 +10,12 @@ class Ruhoh
     module Loader
       class << self
 
+        # ---------------------------------------------------------------------
+        # Loader Class Context
+        # ---------------------------------------------------------------------
+
         # Called when the loader is registered. Installs Rack::Utils and loads
-        # controllers, helpers.
+        # controllers, accessories.
         # @param [Sinatra::Base] app        sinatra application
         def registered(app)
           app.helpers do
@@ -25,6 +29,7 @@ class Ruhoh
         # Loads all controllers that match
         # +ruhoh-manager/controllers/*_controller.rb+
         def load_controllers
+          load_glob File.join('controllers', 'application_controller.rb')
           load_glob File.join('controllers', '*_controller.rb')
         end
 

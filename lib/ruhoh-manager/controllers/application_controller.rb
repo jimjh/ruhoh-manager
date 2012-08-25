@@ -7,13 +7,12 @@ class Ruhoh
     class ApplicationController
 
       extend Forwardable
-      include Serializer
-      include StatusCode
+      include Accessory::Serializer
+      include Accessory::StatusCode
 
       # Forwards methods to app delegate and rack utils
-      def_delegators :@app, :send_file, :mime_type, :error,
-                            :status, :halt, :logger, :request,
-                            :content_type, :not_found
+      def_delegators :@app, :send_file, :mime_type, :status,
+                            :halt, :logger, :request, :content_type
 
       # @param [Sinatra::Base] app          sinatra application
       def initialize(app)

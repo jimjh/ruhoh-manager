@@ -18,7 +18,7 @@ class Ruhoh
             include Rack::Utils
             app.send :alias_method, :h, :escape_html
           end
-          load_helpers
+          load_accessories
           load_controllers
         end
 
@@ -28,14 +28,14 @@ class Ruhoh
           load_glob File.join('controllers', '*_controller.rb')
         end
 
-        # Loads all helpers in the helpers directory.
-        def load_helpers
-          load_glob File.join('helpers', '*.rb')
+        # Loads all accessories in the accessories directory.
+        # i.e. +ruhoh-manager/accessories/*.rb+
+        def load_accessories
+          load_glob File.join('accessories', '*.rb')
         end
 
-        # Loads all files that match the given +glob+ (relative to
-        # lib/ruhoh-manager)
-        # @param [String] glob        UNIX glob
+        # Loads all files that match the given +glob+
+        # @param [String] glob        UNIX glob, relative to lib/ruhoh-manager
         def load_glob(glob)
           glob = File.join(File.dirname(__FILE__), '..', glob)
           Dir[glob].each { |f| load f }

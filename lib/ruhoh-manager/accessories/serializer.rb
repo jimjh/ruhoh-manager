@@ -1,10 +1,10 @@
 class Ruhoh
   module Manager
 
-    # Collection of helper methods for serialization.
+    # Collection of helper methods for serialization for use in controllers.
     # This can only be used in subclasses of {ApplicationController} because
     # it requires method delegation to a Sinatra app.
-    module Serializer
+    module Accessory::Serializer
 
       # @return mime type for json
       def json

@@ -6,12 +6,7 @@ class Ruhoh
 
       register Loader
       register Rack::OAuth2::Sinatra
-      register OAuth
-
-      load_helpers          # use the loader to load controllers and helpers
-      load_controllers
-
-      protect oauth         # use oauth2 to protect access to the api
+      register OAuth2
 
       configure :production do
         enable :logging

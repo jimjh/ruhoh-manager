@@ -1,7 +1,7 @@
 class Ruhoh
   module Manager
 
-    # Methods for loading controllers and helpers.
+    # Methods for loading controllers and accessories.
     # Usage:
     #   class Api < Sinatra::Base
     #     register Loader
@@ -40,7 +40,7 @@ class Ruhoh
         end
 
         # Loads all files that match the given +glob+
-        # @param [String] glob        UNIX glob, relative to lib/ruhoh-manager
+        # @param [String] glob    UNIX glob, relative to +lib/ruhoh-manager+
         def load_glob(glob)
           glob = File.join(File.dirname(__FILE__), '..', glob)
           Dir[glob].each { |f| load f }

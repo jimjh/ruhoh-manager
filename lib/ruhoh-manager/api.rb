@@ -5,7 +5,6 @@ class Ruhoh
     class Api < Sinatra::Base
 
       register Loader
-      register Rack::OAuth2::Sinatra
       register OAuth2
 
       configure :production do

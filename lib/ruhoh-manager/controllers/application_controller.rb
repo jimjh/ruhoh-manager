@@ -9,7 +9,7 @@ class Ruhoh
       extend Forwardable
       Accessory.constants.each { |acc| include Accessory.const_get(acc) }
 
-      # Forwards methods to app delegate and rack utils
+      # Forwards methods to app delegate
       def_delegators :@app, :send_file, :mime_type, :status,
                             :halt, :logger, :request, :content_type
 

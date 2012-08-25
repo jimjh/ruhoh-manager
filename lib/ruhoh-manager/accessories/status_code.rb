@@ -4,6 +4,8 @@ class Ruhoh
     # Collection of helper methods for halting and returning status codes.
     # This can only be used in subclasses of {ApplicationController} because
     # it requires method delegation to a Sinatra app.
+    # Example:
+    #   forbidden unless is_allowed? path  #>> raises 403 if path is not allowed
     module Accessory::StatusCode
 
       # Set status to Forbidden and stop.

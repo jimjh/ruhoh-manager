@@ -4,7 +4,7 @@ class Ruhoh
     # OAuth2 for the API
     # Usage:
     #   class Api < Sinatra::Base
-    #     register OAuth
+    #     register OAuth2
     #     ...
     #   end
     module OAuth2
@@ -22,6 +22,7 @@ class Ruhoh
         # connection and authenticator.
         # @param [Sinatra::Base] app        sinatra application
         def registered(app)
+          app.register Rack::OAuth2::Sinatra
           app.helpers Helpers
           oauth = app.oauth
           oauth.database = Mongo::Connection.new[DB]
@@ -62,6 +63,7 @@ class Ruhoh
         # OAuth2 Request Context
         # ---------------------------------------------------------------------
 
+        # Gets the current user
         def current_user
           # TODO
           'x'

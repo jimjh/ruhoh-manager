@@ -36,6 +36,7 @@ class Ruhoh
         # Loads all accessories in the accessories directory.
         # i.e. +ruhoh-manager/accessories/*.rb+
         def load_accessories
+          load_glob File.join('accessories', 'accessory.rb')
           load_glob File.join('accessories', '*.rb')
         end
 

@@ -6,6 +6,7 @@ class Ruhoh
 
       register Loader
       register OAuth2
+      helpers Markup
 
       configure :production do
         enable :logging

@@ -24,13 +24,16 @@ class Ruhoh
         def registered(app)
           app.register Rack::OAuth2::Sinatra
           app.helpers Helpers
-          setup_oauth app.oauth
-          setup_routes app
+          _setup_oauth app.oauth
+          _setup_routes app
         end
 
+        private
+
         # Configures oauth
-        def setup_oauth(oauth)
+        def _setup_oauth(oauth)
           oauth.authorize_path = "#{Manager::BASE_PATH}/oauth/authorize"
+          oauth.authorization_types = 'code'
           oauth.database = Mongo::Connection.new[DB]
           oauth.authenticator = lambda do |username, password|
             # TODO
@@ -40,21 +43,33 @@ class Ruhoh
 
         # Installs a bunch of routes for granting/denying oauth.
         # @param [Sinatra::Base] app      sinatra application
-        def setup_routes(app)
-          oauth = app.oauth
+        def _setup_routes(app)
+          _route_for_authorize app
+          _route_for_grant app
+          _route_for_deny app
+        end
+
+        # Route for authorize
+        def _route_for_authorize(app)
           app.get '/oauth/authorize' do
             if current_user
-              require 'pry'
-              binding.pry
               erb :'oauth/authorize'
             else
-              redirect "/oauth/login?authorization=#{oauth.authorization}"
+              redirect "/oauth/login?authorization=#{app.oauth.authorization}"
             end
           end
+        end
+
+        # Route for grant
+        def _route_for_grant(app)
           app.post '/oauth/grant' do
             # TODO
             oauth.grant! 'x'
           end
+        end
+
+        # Route for deny
+        def _route_for_deny(app)
           app.post '/oauth/deny' do
             # TODO
             oauth.deny!

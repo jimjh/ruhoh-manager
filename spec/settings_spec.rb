@@ -120,6 +120,7 @@ class Ruhoh
 
           it 'should never allow access to other files' do
             api = mock app
+            api.should_receive(:mime_type).and_return('application/json')
             api.should_receive(:halt).and_throw(:halt)
             controller = SettingsController.new api
             expect {

@@ -47,7 +47,7 @@ class Ruhoh
       #   json_halt 404, "Not found" # >> {"message": "Not found."}
       def json_halt(code, message)
         halt code,
-             {'Content-Type' => 'application/json'},
+             {'Content-Type' => mime_type(:json)},
              {message: message}.to_json
       end
 

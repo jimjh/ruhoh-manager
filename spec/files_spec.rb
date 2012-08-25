@@ -15,6 +15,7 @@ class Ruhoh
 
         it 'should deny access to hidden files' do
           api = mock app
+          api.should_receive(:mime_type).and_return('application/json')
           api.should_receive(:halt).and_throw(:halt)
           controller = FilesController.new api
           expect {

@@ -4,5 +4,7 @@ class Ruhoh
   module Manager
     # version number
     VERSION = "0.0.1"
+    # base path
+    BASE_PATH = '/admin'
   end
 end

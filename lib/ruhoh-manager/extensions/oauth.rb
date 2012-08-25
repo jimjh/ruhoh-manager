@@ -12,11 +12,11 @@ class Ruhoh
       # Name of the Mongo database
       DB = 'db'
 
-      # -----------------------------------------------------------------------
-      # OAuth2 Class Context
-      # -----------------------------------------------------------------------
-
       class << self
+
+        # ---------------------------------------------------------------------
+        # OAuth2 Class Context
+        # ---------------------------------------------------------------------
 
         # Called when this extension is registered. Sets up oauth database
         # connection and authenticator.
@@ -24,13 +24,18 @@ class Ruhoh
         def registered(app)
           app.register Rack::OAuth2::Sinatra
           app.helpers Helpers
-          oauth = app.oauth
+          setup_oauth app.oauth
+          setup_routes app
+        end
+
+        # Configures oauth
+        def setup_oauth(oauth)
+          oauth.authorize_path = "#{Manager::BASE_PATH}/oauth/authorize"
           oauth.database = Mongo::Connection.new[DB]
           oauth.authenticator = lambda do |username, password|
             # TODO
             'x'
           end
-          setup_routes app
         end
 
         # Installs a bunch of routes for granting/denying oauth.
@@ -39,6 +44,8 @@ class Ruhoh
           oauth = app.oauth
           app.get '/oauth/authorize' do
             if current_user
+              require 'pry'
+              binding.pry
               erb :'oauth/authorize'
             else
               redirect "/oauth/login?authorization=#{oauth.authorization}"

@@ -25,14 +25,14 @@ class Ruhoh
       opts[:env] ||= 'development'
 
       # FIXME: handle multiple ruhohs
-      setup
+      setup opts
       Ruhoh.config.env = opts[:env]
       Ruhoh::DB.update_all
 
       Rack::Builder.new {
         use Rack::Lint
         use Rack::ShowExceptions
-        map '/admin' do
+        map BASE_PATH do
           run Ruhoh::Manager::Api
         end
       }

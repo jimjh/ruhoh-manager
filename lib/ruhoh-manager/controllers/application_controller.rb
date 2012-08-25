@@ -1,5 +1,3 @@
-require 'forwardable'
-
 class Ruhoh
   module Manager
 

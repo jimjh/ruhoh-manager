@@ -8,6 +8,7 @@ require 'sinatra/base'
 require 'rack/oauth2/sinatra'
 require 'json'
 require 'ruhoh'
+require 'forwardable'
 
 require 'ruhoh-manager/version'
 require 'ruhoh-manager/extensions/loader'

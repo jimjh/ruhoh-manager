@@ -37,13 +37,11 @@ class Ruhoh
         Ruhoh::DB.update_all # FIXME
 
         require 'ruhoh-manager/api'
-        Rack::Builder.new {
+        Rack::Builder.new do
           use Rack::Lint
           use Rack::ShowExceptions
-          map BASE_PATH do
-            run Ruhoh::Manager::Api
-          end
-        }
+          map BASE_PATH { run Ruhoh::Manager::Api }
+        end
 
       end
 

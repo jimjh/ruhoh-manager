@@ -1,13 +1,15 @@
+require 'ruhoh-manager/extensions/loader'
+
 class Ruhoh
   module Manager
 
     # Sinatra App that exposes a REST api for ruhoh administration.
     class Api < Sinatra::Base
 
-      register Loader
-      register Conditional
-      register OAuth2
-      helpers Markup
+      register Extensions::Loader
+      register Extensions::Conditional
+      register Extensions::OAuth2
+      helpers Extensions::Markup
 
       configure :production do
         enable :logging
@@ -15,6 +17,9 @@ class Ruhoh
 
       configure :development do
         enable :logging, :dump_errors
+      end
+
+      configure :test do
       end
 
       get '/:controller/?*' do

@@ -1,7 +1,7 @@
 require 'ruhoh-manager/controllers/files_controller'
 
 class Ruhoh
-  module Manager
+  module Manager::Controllers
 
     # Controls access to posts
     # @author Jim Lim

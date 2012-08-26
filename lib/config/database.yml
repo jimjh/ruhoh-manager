@@ -1,0 +1,17 @@
+---
+# Configuration options for Mongo database connection.
+
+development:
+  name: ruhoh_manager_dev
+  host: localhost
+  port: 27017
+
+test:
+  name: ruhoh_manager_test
+  host: localhost
+  port: 27017
+
+production:
+  name: ruhoh_manager
+  host: localhost
+  port: 27017

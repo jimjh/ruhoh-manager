@@ -1,12 +1,12 @@
 class Ruhoh
-  module Manager
+  module Manager::Accessories
 
     # Collection of helper methods for serialization for use in controllers.
-    # This can only be used in subclasses of {ApplicationController} because
-    # it requires method delegation to a Sinatra app.
+    # This can only be used in subclasses of {Controllers::ApplicationController}
+    # because it requires method delegation to a Sinatra app.
     # Example:
     #   respond {:x => 'y'}, request.accept
-    module Accessory::Serializer
+    module Serializer
 
       # @return mime type for json
       def json
@@ -38,7 +38,6 @@ class Ruhoh
             content_type :yaml, :charset => 'utf-8'
             halt object.to_yaml
           when text
-            require 'pp'
             content_type :text, :charset => 'utf-8'
             halt object.pretty_inspect
           end

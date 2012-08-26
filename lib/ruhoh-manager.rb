@@ -1,58 +1,91 @@
-# encoding: UTF-8
-Encoding.default_internal = 'UTF-8'
-require 'yaml'
-require 'psych'
-YAML::ENGINE.yamler = 'psych'
+require 'ruhoh'
+require 'forwardable'
+require 'pp'
 
 require 'sinatra/base'
 require 'rack/oauth2/sinatra'
-require 'json'
-require 'ruhoh'
-require 'forwardable'
 
 require 'ruhoh-manager/version'
-require 'ruhoh-manager/extensions/loader'
-require 'ruhoh-manager/extensions/oauth'
-require 'ruhoh-manager/extensions/conditional'
-require 'ruhoh-manager/extensions/markup'
-require 'ruhoh-manager/api'
+require 'ruhoh-manager/config'
 
 class Ruhoh
   module Manager
 
-    # Public: launches the sinatra app that serves the REST api.
-    # @param [Hash] opts         hash of options
-    def self.launch(opts={})
+    # Names of configuration files.
+    Names = {
+      config: 'config'                      # directory containing config files
+    }
+    # Gem root.
+    @root = File.dirname __FILE__
+    # Struct containing names of configuration files.
+    @names = OpenStruct.new Names
 
-      opts[:env] ||= 'development'
+    class << self
 
+      attr_reader :config, :root, :names
+
+      # Public: launches the sinatra app that serves the REST api.
+      # = Options
+      # - +:env+ - one of +'development'+, +'test'+, or +'production'.
+      # @param [Hash] opts         hash of options
+      def launch(opts={})
+
+        opts[:env] ||= 'development'
+
+        setup opts
+        setup_ruhoh opts
+        Ruhoh::DB.update_all # FIXME
+
+        require 'ruhoh-manager/api'
+        Rack::Builder.new {
+          use Rack::Lint
+          use Rack::ShowExceptions
+          map BASE_PATH do
+            run Ruhoh::Manager::Api
+          end
+        }
+
+      end
+
+      # Internal: prepares the manager and the ruhoh app
+      def setup(opts={})
+        @config = Manager::Config.generate opts[:env]
+        !!@config
+      end
+
+      # Internal
       # FIXME: handle multiple ruhohs
-      setup opts
-      Ruhoh.config.env = opts[:env]
-      Ruhoh::DB.update_all
+      def setup_ruhoh(opts={})
+        reset_ruhoh
+        Ruhoh.setup opts
+        Ruhoh.setup_paths
+        Ruhoh.setup_urls
+        Ruhoh.setup_plugins unless opts[:enable_plugins] == false
+        Ruhoh.config.env = opts[:env]
+      end
 
-      Rack::Builder.new {
-        use Rack::Lint
-        use Rack::ShowExceptions
-        map BASE_PATH do
-          run Ruhoh::Manager::Api
-        end
-      }
+      # Internal: resets ruhoh
+      def reset_ruhoh(*args)
+        Ruhoh.reset(*args)
+      end
 
-    end
+      # Internal: retrieves the mongo database.
+      # @return [Mongo::DB] mongo database
+      def database
+        ensure_config
+        return @db unless @db.nil?
+        opts = config.database
+        @db = Mongo::Connection.new(opts['host'], opts['port']).db(opts['name'])
+      end
 
-    # Internal: prepares the manager and the ruhoh app
-    def self.setup(opts={})
-      Ruhoh.setup opts       # TODO: handle multiple ruhohs
-      Ruhoh.setup_paths
-      Ruhoh.setup_urls
-      Ruhoh.setup_plugins unless opts[:enable_plugins] == false
-    end
+      private
 
-    # Internal: resets the manager
-    def self.reset(*args)
-      Ruhoh.reset(*args)
-    end
+      # Raise an exception if +config+ has not been initialized.
+      def ensure_config
+        raise "Config has not been generated yet." if @config.nil?
+      end
 
-  end
+    end # /self
+
+  end # /Manager
 end

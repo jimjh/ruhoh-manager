@@ -1,5 +1,5 @@
 class Ruhoh
-  module Manager
+  module Manager::Controllers
 
     # Controls settings actions (for +site.yml+, +config.yml+, and +payload+).
     # @author Jim Lim

@@ -1,13 +1,20 @@
 class Ruhoh
-  module Manager
+  module Manager::Controllers
 
     # Super class for all manager controllers. Does plumbing to provide
     # helper methods for child classes.
-    # @author Jim Lim
     class ApplicationController
 
+      # Includes all accessories in the {Accessories} module.
+      def self.include_accessories
+        Manager::Accessories.constants.each { |acc|
+          include Manager::Accessories.const_get(acc)
+        }
+      end
+      private_class_method :include_accessories
+
       extend Forwardable
-      Accessory.constants.each { |acc| include Accessory.const_get(acc) }
+      include_accessories
 
       # Forwards methods to app delegate
       def_delegators :@app, :send_file, :mime_type, :status,

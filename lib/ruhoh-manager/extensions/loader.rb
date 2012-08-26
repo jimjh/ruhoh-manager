@@ -1,7 +1,7 @@
 class Ruhoh
-  module Manager
+  module Manager::Extensions
 
-    # Methods for loading controllers and accessories.
+    # Methods for loading controllers, accessories, and extensions.
     # Usage:
     #   class Api < Sinatra::Base
     #     register Loader
@@ -24,7 +24,10 @@ class Ruhoh
           end
           load_accessories
           load_controllers
+          load_extensions
         end
+
+        private
 
         # Loads all controllers that match
         # +ruhoh-manager/controllers/*_controller.rb+
@@ -36,8 +39,13 @@ class Ruhoh
         # Loads all accessories in the accessories directory.
         # i.e. +ruhoh-manager/accessories/*.rb+
         def load_accessories
-          load_glob File.join('accessories', 'accessory.rb')
           load_glob File.join('accessories', '*.rb')
+        end
+
+        # Loads all extensions in the extensions directory.
+        # i.e. +ruhoh-manager/extensions/*.rb+
+        def load_extensions
+          load_glob File.join('extensions', '*.rb')
         end
 
         # Loads all files that match the given +glob+

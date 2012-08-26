@@ -1,7 +1,7 @@
 require 'ruhoh-manager/controllers/files_controller'
 
 class Ruhoh
-  module Manager
+  module Manager::Controllers
 
     # Controls access to media (e.g. images, audio)
     # @author Jim Lim

@@ -1,5 +1,5 @@
 class Ruhoh
-  module Manager
+  module Manager::Extensions
 
     # OAuth2 for the API
     # Usage:
@@ -8,9 +8,6 @@ class Ruhoh
     #     ...
     #   end
     module OAuth2
-
-      # Name of the Mongo database
-      DB = 'db'
 
       class << self
 
@@ -37,7 +34,7 @@ class Ruhoh
           oauth.access_token_path = "#{Manager::BASE_PATH}/oauth/access_token"
           oauth.authorization_types = %w{code}
           oauth.param_authentication = true
-          oauth.database = Mongo::Connection.new[DB]
+          oauth.database = Manager.database
           oauth.authenticator = lambda do |username, password|
             # TODO
             'x'

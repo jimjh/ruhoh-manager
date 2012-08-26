@@ -16,7 +16,7 @@ class Ruhoh
     #   class XController < ApplicationController
     #     # useful_method is available here
     #   end
-    module Accessory
+    module Accessories
     end
 
   end

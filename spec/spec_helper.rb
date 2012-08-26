@@ -22,28 +22,48 @@ ENV['RACK_ENV'] = 'test'
 
 TEST_SITE_PATH = File.join(File.dirname(__FILE__), 'test-site')
 TEMP_SITE_PATH = File.expand_path '__tmp'
+OAUTH_CLIENT_ID = '000000000000000000000001'
+OAUTH_CLIENT_SECRET = 'y'
 
-# Prepares the temp directory
-def setup
+# Prepares the temp directory.
+def setup_blog
   FileUtils.mkdir TEMP_SITE_PATH
   FileUtils.cp_r File.join(TEST_SITE_PATH, '.'), TEMP_SITE_PATH
   # FIXME: I don't like this; change it when we can handle multiple ruhohs
   Ruhoh::Utils.stub(:parse_yaml_file).and_return('theme' => 'twitter')
   Ruhoh::Paths.stub(:theme_is_valid?).and_return(true)
-  Ruhoh::Manager.setup :source => TEMP_SITE_PATH
+  Ruhoh::Manager.setup_ruhoh source: TEMP_SITE_PATH, env: 'test'
 end
 
-# Removes the temp directory
-def teardown
+# Prepares a mock database.
+def setup_db
+  Ruhoh::Manager.setup env: 'test'
+  require 'ruhoh-manager/api'
+  Rack::OAuth2::Server.options[:collection_prefix] = 'oauth2'
+  Rack::OAuth2::Server.register \
+    display_name: 'Test Client',
+    link: 'http://test/',
+    scope: %w{read write},
+    redirect_uri: 'http://test/callback',
+    id: BSON::ObjectId.from_string(OAUTH_CLIENT_ID),
+    secret: OAUTH_CLIENT_SECRET
+end
+
+# Removes the temp directory.
+def teardown_blog
   FileUtils.remove_dir(TEMP_SITE_PATH, true) if Dir.exists? TEMP_SITE_PATH
-  Ruhoh::Manager.reset
+  Ruhoh::Manager.reset_ruhoh
+end
+
+# Resets the database.
+def teardown_db
+  db =  Ruhoh::Manager.database
+  db.connection.drop_database db.name
 end
 
 RSpec.configure do |config|
-  config.before(:each) do
-    setup
-  end
-  config.after(:each) do
-    teardown
-  end
+  config.before(:all) { setup_db }
+  config.after(:all) { teardown_db }
+  config.before(:each) { setup_blog }
+  config.after(:each) { teardown_blog }
 end

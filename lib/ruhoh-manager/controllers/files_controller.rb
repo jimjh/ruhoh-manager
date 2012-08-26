@@ -1,5 +1,5 @@
 class Ruhoh
-  module Manager
+  module Manager::Controllers
 
     # Abstract class that controls access to file resources
     # @abstract

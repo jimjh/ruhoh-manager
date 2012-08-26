@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'debugger-pry'
   s.add_dependency 'sinatra', "~> 1.3.2"
   s.add_dependency 'ruhoh', "~> 1.0.0.alpha"
   s.add_dependency 'rack-oauth2-server'

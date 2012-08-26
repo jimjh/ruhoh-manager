@@ -1,5 +1,5 @@
 class Ruhoh
-  module Manager
+  module Manager::Extensions
 
     # Adds convenience conditions
     #

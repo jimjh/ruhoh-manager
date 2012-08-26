@@ -26,6 +26,7 @@ class Ruhoh
           app.helpers Helpers
           _setup_oauth app.oauth
           _setup_routes app
+          _setup_filters app
         end
 
         private
@@ -33,11 +34,38 @@ class Ruhoh
         # Configures oauth
         def _setup_oauth(oauth)
           oauth.authorize_path = "#{Manager::BASE_PATH}/oauth/authorize"
-          oauth.authorization_types = 'code'
+          oauth.access_token_path = "#{Manager::BASE_PATH}/oauth/access_token"
+          oauth.authorization_types = %w{code}
+          oauth.param_authentication = true
           oauth.database = Mongo::Connection.new[DB]
           oauth.authenticator = lambda do |username, password|
             # TODO
             'x'
+          end
+        end
+
+        # Installs filter to protect paths.
+        # @param [Sinatra::Base] app      sinatra application
+        def _setup_filters(app)
+          _protect app, :method => [:get, :head], :scope => 'read'
+          _protect app, :method => [:put, :post, :delete], :scope => 'write'
+        end
+
+        # Protects app by setting up path filters (helper method for
+        # {_setup_filters}.
+        #
+        # = Options
+        # - +:scope+      - +"read"+, +"write"+, or both
+        # - +:method+     - one of +:get :head :put :post :delete+
+        #
+        # @param [Hash] opts            options hash
+        # @param [Sinatra::Base] app    sinatra application
+        # @see #_setup_filters
+        def _protect(app, opts)
+          scope = opts[:scope]
+          app.before '/:controller/?*', :method => opts[:method] do
+            halt oauth.no_access! unless oauth.authenticated?
+            halt oauth.no_scope! scope unless oauth.scope.include? scope
           end
         end
 
@@ -49,18 +77,18 @@ class Ruhoh
           _route_for_deny app
         end
 
-        # Route for authorize
+        # Route for +/oauth/authorize+.
         def _route_for_authorize(app)
           app.get '/oauth/authorize' do
             if current_user
               erb :'oauth/authorize'
             else
-              redirect "/oauth/login?authorization=#{app.oauth.authorization}"
+              redirect "/oauth/login?authorization=#{oauth.authorization}"
             end
           end
         end
 
-        # Route for grant
+        # Route for +/oauth/grant+.
         def _route_for_grant(app)
           app.post '/oauth/grant' do
             # TODO
@@ -68,7 +96,7 @@ class Ruhoh
           end
         end
 
-        # Route for deny
+        # Route for +/oauth/deny+.
         def _route_for_deny(app)
           app.post '/oauth/deny' do
             # TODO

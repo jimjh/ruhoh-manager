@@ -5,6 +5,7 @@ class Ruhoh
     class Api < Sinatra::Base
 
       register Loader
+      register Conditional
       register OAuth2
       helpers Markup
 

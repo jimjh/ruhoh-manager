@@ -16,14 +16,13 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'ruhoh-manager'
 require 'rspec'
 require 'rack/test'
+require 'oauth_context'
 
 # configure test environment
 ENV['RACK_ENV'] = 'test'
 
 TEST_SITE_PATH = File.join(File.dirname(__FILE__), 'test-site')
 TEMP_SITE_PATH = File.expand_path '__tmp'
-OAUTH_CLIENT_ID = '000000000000000000000001'
-OAUTH_CLIENT_SECRET = 'y'
 
 # Prepares the temp directory.
 def setup_blog
@@ -39,14 +38,6 @@ end
 def setup_db
   Ruhoh::Manager.setup env: 'test'
   require 'ruhoh-manager/api'
-  Rack::OAuth2::Server.options[:collection_prefix] = 'oauth2'
-  Rack::OAuth2::Server.register \
-    display_name: 'Test Client',
-    link: 'http://test/',
-    scope: %w{read write},
-    redirect_uri: 'http://test/callback',
-    id: BSON::ObjectId.from_string(OAUTH_CLIENT_ID),
-    secret: OAUTH_CLIENT_SECRET
 end
 
 # Removes the temp directory.

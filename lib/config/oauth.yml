@@ -1,0 +1,9 @@
+---
+# Keep master usernames and passwords here
+test:
+  username: 'test_user'
+  password: 'test_password'
+
+development:
+
+production:

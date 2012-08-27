@@ -43,7 +43,7 @@ class Ruhoh
       #                                 +:controller+ and +:splat+)
       def _invoke(method, params)
         controller = _create_controller params[:controller]
-        not_found unless controller.respond_to? method
+        _missing :action unless controller.respond_to? method
         controller.public_send method, params[:splat]
       end
 
@@ -53,13 +53,20 @@ class Ruhoh
       def _create_controller(controller_str)
         controller_name = "#{controller_str.capitalize}Controller"
         begin
-          error 404, 'Unknown controller' unless Manager.const_defined? controller_name
+          _missing :controller unless Controllers.const_defined? controller_name
         rescue NameError => e
           logger.error e.message
-          error 404, 'Unknown controller'
+          _missing :controller
         end
-        controller_cls = Manager.const_get controller_name
+        controller_cls = Controllers.const_get controller_name
         controller_cls.new self
+      end
+
+      # Raises a 404 for missing +type+.
+      # @param [String] type      e.g. action, controller
+      def _missing(type)
+        content_type :json
+        error 404, {message: "Unknown #{type}"}.to_json
       end
 
     end

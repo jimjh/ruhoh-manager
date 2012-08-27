@@ -35,10 +35,16 @@ class Ruhoh
           oauth.authorization_types = %w{code}
           oauth.param_authentication = true
           oauth.database = Manager.database
-          oauth.authenticator = lambda do |username, password|
-            # TODO
-            'x'
-          end
+          oauth.authenticator = lambda { |u, p| _authenticate u, p }
+        end
+
+        # Authenticates +username+ and +password+.
+        # @return [String] identity or nil
+        def _authenticate(username, password)
+          config = Manager.config.oauth
+          nil unless config.has_key? 'username' and config.has_key? 'password'
+          return username if [config['username'], config['password']] == [username, password]
+          nil
         end
 
         # Installs filter to protect paths.

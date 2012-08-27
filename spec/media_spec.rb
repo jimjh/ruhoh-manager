@@ -7,7 +7,7 @@ class Ruhoh
 
       describe 'Media Controller' do
 
-        include Rack::Test::Methods
+        include_context 'OAuth'
 
         Names = OpenStruct.new(Ruhoh::Names)
         MEDIA_DIR = File.join(TEMP_SITE_PATH, Names.media)
@@ -22,7 +22,7 @@ class Ruhoh
             # content type shld be based on extension
             f = File.join MEDIA_DIR, 'hockey.jpg'
             IO.write f, 'ただいま', :mode => 'wb+'
-            get '/media/hockey.jpg'
+            oget '/media/hockey.jpg'
             last_response.should be_ok
             last_response.content_type.should match %{^image/jpeg}
             last_response.content_length.should == File.new(f).size
@@ -32,7 +32,7 @@ class Ruhoh
             f = File.join(MEDIA_DIR, 'some', 'nested', 'structure', 'x.png')
             FileUtils.mkdir_p File.dirname(f)
             IO.write f, '«»≈≠Ωº', :mode => 'wb+'
-            get '/media/some/nested/structure/x.png'
+            oget '/media/some/nested/structure/x.png'
             last_response.should be_ok
             last_response.content_type.should match %{^image/png}
             last_response.content_length.should == File.new(f).size
@@ -41,14 +41,14 @@ class Ruhoh
           it 'should write successfully and return a 200 if file exists' do
             target = File.join(MEDIA_DIR, 'target.md')
             IO.write target, 'here is some english text', :mode => 'wb+'
-            put '/media/target.md', '柳暗花明又一村'
+            oput '/media/target.md', '柳暗花明又一村'
             last_response.should be_ok
             IO.read(target).should == '柳暗花明又一村'
           end
 
           it 'should write successfully and return a 201 if file was created' do
             target = File.join(MEDIA_DIR, 'target.md')
-            put '/media/target.md', '山重水复疑无路'
+            oput '/media/target.md', '山重水复疑无路'
             last_response.status.should == 201
             IO.read(target).should == '山重水复疑无路'
           end
@@ -57,7 +57,7 @@ class Ruhoh
             target = File.join(MEDIA_DIR, 'target.md')
             IO.write target, 'hello there this is jim', :mode => 'wb+'
             File.file?(target).should be_true
-            delete '/media/target.md'
+            odelete '/media/target.md'
             last_response.should be_ok
             File.file?(target).should be_false
           end
@@ -78,11 +78,11 @@ class Ruhoh
             prep_dir
 
             # check with and without trailing slashes
-            get '/media/test'
+            oget '/media/test'
             last_response.should be_ok
             last_response.content_type.should match %r{^application/json;charset=utf-8}
 
-            get '/media/test/'
+            oget '/media/test/'
             last_response.should be_ok
             last_response.content_type.should match %r{^application/json;charset=utf-8}
 
@@ -101,13 +101,13 @@ class Ruhoh
           end
 
           it 'should return the directory listing as YAML' do
-            get '/media/', {}, {'HTTP_ACCEPT' => 'text/yaml'}
+            oget '/media/', {}, {'HTTP_ACCEPT' => 'text/yaml'}
             last_response.should be_ok
             last_response.content_type.should match %r{^text/yaml;charset=utf-8}
           end
 
           it 'should return the directory listing as text' do
-            get '/media/', {}, {'HTTP_ACCEPT' => 'text/plain'}
+            oget '/media/', {}, {'HTTP_ACCEPT' => 'text/plain'}
             last_response.should be_ok
             last_response.content_type.should match %r{^text/plain;charset=utf-8}
           end
@@ -123,25 +123,25 @@ class Ruhoh
         context 'reading/writing to other files' do
 
           it 'should return a 404 if getting unknown resource' do
-            get '/media/xyz'
+            oget '/media/xyz'
             last_response.should be_not_found
           end
 
           it 'should return a 409 if the target path is a directory' do
             target = File.join(MEDIA_DIR, 'target')
             FileUtils.mkdir_p target
-            put '/media/target', 'some content'
+            oput '/media/target', 'some content'
             last_response.status.should == 409
           end
 
           it 'should return a 404 if deleting unknown page' do
-            delete '/media/x'
+            odelete '/media/x'
             last_response.status.should == 404
           end
 
           it 'should return 403 if deleting directory' do
             FileUtils.mkdir File.join(MEDIA_DIR, 'x')
-            delete '/media/x'
+            odelete '/media/x'
             last_response.status.should == 403
           end
 

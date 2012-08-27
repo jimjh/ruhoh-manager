@@ -6,7 +6,7 @@ class Ruhoh
 
       describe 'Api' do
 
-        include Rack::Test::Methods
+        include_context 'OAuth'
 
         def app
           Api
@@ -14,21 +14,24 @@ class Ruhoh
 
         context 'missing controller' do
 
-          it 'should return a 404 for missing controller' do
-            get '/settings/config', {}, {'HTTP_ACCEPT' => 'application/json'}
+          it 'should return a 404 when getting with missing controller' do
+            oget '/settings/config'
             last_response.should be_ok
-            get '/blah/xyz', {} ,{'HTTP_ACCEPT' => 'application/json'}
+            oget '/blah/xyz'
             last_response.should be_not_found
-            put '/settings/config', ''
+          end
+
+          it 'should return a 404 when putting with missing controller' do
+            oput '/settings/config', ''
             last_response.should be_ok
-            put '/blah/xyz', ''
+            oput '/blah/xyz', ''
             last_response.should be_not_found
           end
 
           it 'should return a 404 for bad controller name' do
-            get '/x.y/blah'
+            oget '/x.y/blah'
             last_response.should be_not_found
-            put '/x.y/blah'
+            oput '/x.y/blah'
             last_response.should be_not_found
           end
 

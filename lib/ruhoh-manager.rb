@@ -40,7 +40,9 @@ class Ruhoh
         Rack::Builder.new do
           use Rack::Lint
           use Rack::ShowExceptions
-          map BASE_PATH { run Ruhoh::Manager::Api }
+          map BASE_PATH do
+            run Api
+          end
         end
 
       end

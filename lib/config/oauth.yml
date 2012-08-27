@@ -5,5 +5,7 @@ test:
   password: 'test_password'
 
 development:
+  username: 'dev_user'
+  password: 'dev_password'
 
 production:

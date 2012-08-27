@@ -8,9 +8,10 @@ class Ruhoh
       describe 'Partials Controller' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         Names = OpenStruct.new(Ruhoh::Names)
-        PARTIALS_DIR = File.join(TEMP_SITE_PATH, Names.partials)
+        PARTIALS_DIR = File.join(Test::Blog::TEMP_SITE_PATH, Names.partials)
 
         def app
           Api

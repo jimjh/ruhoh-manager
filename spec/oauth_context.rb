@@ -4,18 +4,19 @@ class Ruhoh
     # Test module for Ruhoh Manager.
     module Test
 
-      # Test module for the OAuth extension.
+      # Shared context for examples that require OAuth.
       module OAuth
 
         CLIENT_ID = '000000000000000000000001'
         CLIENT_SECRET = 'theearthisround'
         REDIRECT_URI = 'http://test/callback'
+        SCOPE = %w{read write}
 
         shared_context 'OAuth' do
 
           include Rack::Test::Methods
 
-          before do
+          before(:all) do
             _register_client
             @token = _access_token
           end
@@ -51,7 +52,7 @@ class Ruhoh
               client_id: CLIENT_ID,
               client_secret: CLIENT_SECRET,
               redirect_uri: REDIRECT_URI,
-              scope: %w{read write},
+              scope: SCOPE,
               username: Manager.config.oauth['username'],
               password: Manager.config.oauth['password']
             last_response.should be_ok
@@ -64,7 +65,7 @@ class Ruhoh
             Rack::OAuth2::Server.register \
               display_name: 'Test Client',
               link: 'http://test/',
-              scope: %w{read write},
+              scope: SCOPE,
               redirect_uri: REDIRECT_URI,
               id: BSON::ObjectId.from_string(CLIENT_ID),
               secret: CLIENT_SECRET

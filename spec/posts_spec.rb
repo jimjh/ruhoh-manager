@@ -8,9 +8,10 @@ class Ruhoh
       describe 'Posts Controller' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         Names = OpenStruct.new(Ruhoh::Names)
-        POSTS_DIR = File.join(TEMP_SITE_PATH, Names.posts)
+        POSTS_DIR = File.join(Test::Blog::TEMP_SITE_PATH, Names.posts)
 
         def app
           Api

@@ -7,6 +7,7 @@ class Ruhoh
       describe 'Api' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         def app
           Api

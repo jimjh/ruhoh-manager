@@ -8,6 +8,7 @@ class Ruhoh
       describe 'Files Controller' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         def app
           Api

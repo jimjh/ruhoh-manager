@@ -8,10 +8,11 @@ class Ruhoh
       describe 'Settings Controller' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         Names = OpenStruct.new(Ruhoh::Names)
-        SITE_YML = File.join(TEMP_SITE_PATH, Names.site_data)
-        CONFIG_YML = File.join(TEMP_SITE_PATH, Names.config_data)
+        SITE_YML = File.join(Test::Blog::TEMP_SITE_PATH, Names.site_data)
+        CONFIG_YML = File.join(Test::Blog::TEMP_SITE_PATH, Names.config_data)
 
         def app
           Api

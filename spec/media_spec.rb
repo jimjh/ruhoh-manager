@@ -8,9 +8,10 @@ class Ruhoh
       describe 'Media Controller' do
 
         include_context 'OAuth'
+        include_context 'Blog'
 
         Names = OpenStruct.new(Ruhoh::Names)
-        MEDIA_DIR = File.join(TEMP_SITE_PATH, Names.media)
+        MEDIA_DIR = File.join(Test::Blog::TEMP_SITE_PATH, Names.media)
 
         def app
           Api

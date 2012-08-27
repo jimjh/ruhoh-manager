@@ -102,7 +102,6 @@ class Ruhoh
         # Route for +/oauth/deny+.
         def _route_for_deny(app)
           app.post '/oauth/deny' do
-            # TODO
             oauth.deny!
           end
         end
